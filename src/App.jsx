@@ -1,14 +1,13 @@
-import { HyperlightProvider } from "./hyperlight";
-import Uploader from "./Uploader";
+import Uploader from './Uploader'
+import Editor from './Editor'
 
 function App() {
   return (
-    <div className="p-4">
-      <HyperlightProvider>
-        <Uploader />
-      </HyperlightProvider>
+    <div className='p-4'>
+      <Uploader />
+      <Editor></Editor>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

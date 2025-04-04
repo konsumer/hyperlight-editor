@@ -1,3 +1,6 @@
+import { useHyperlight } from './hyperlight'
+
 export default function Uploader() {
-  return "OK";
+  const { handleFile } = useHyperlight()
+  return <input type='file' className='file-input' onChange={handleFile} />
 }
