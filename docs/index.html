@@ -1,0 +1,150 @@
+<html>
+    <head>
+        <title>Hyperlight editor</title>
+    </head>
+    <body>
+        <h1>Hyperlight editor</h1>
+        <p>This will allow you to edit the values in a save file.</p>
+        <p>
+            You will need a save-file. Here are some ideas of where to find it:
+        </p>
+        <dl class="dl-horizontal well">
+            <dt>OSX</dt>
+            <dd>
+                <code
+                    >~/Library/Application
+                    Support/com.HeartMachine.HyperLightDrifter</code
+                >
+            </dd>
+            <dt>Windows</dt>
+            <dd><code>%LOCALAPPDATA%\HyperLightDrifter</code></dd>
+            <dt>Linux</dt>
+            <dd><code>~/.config/HyperLightDrifter</code></dd>
+        </dl>
+        <input type="file" />
+        <label><input type="number" name="keys" /></label>
+        <h3>Outfit</h3>
+        <ul id="outfits">
+            <li>
+                <label><input type="checkbox" name="outfit_blue" /> Blue</label>
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_fuscia" />
+                    Fuscia</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_white" /> White</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_yellow" />
+                    Yellow</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_orange" />
+                    Orange</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_greenblue" />
+                    Green/Blue
+                </label>
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_ochre" /> Ochre</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_purple" />
+                    Purple</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_brown" /> Brown</label
+                >
+            </li>
+            <li>
+                <label><input type="checkbox" name="outfit_cyan" /> Cyan</label>
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_black" /> Black</label
+                >
+            </li>
+            <li>
+                <label><input type="checkbox" name="outfit_pink" /> Pink</label>
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_skyblue" /> Sky
+                    Blue</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="checkbox" name="outfit_ngplus" /> NG+
+                    (disables others</label
+                >
+            </li>
+        </ul>
+        <script>
+            // shared data of current file
+            let data;
+
+            const inputFile = document.querySelector('input[type="file"]');
+
+            // download a file
+            function download(
+                filename,
+                contents,
+                type = "application/octet-stream",
+            ) {
+                const blob = new Blob([contents], { type });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            // decode a file buffer (base64 text)
+            function decode(text) {
+                const buffer = atob(text);
+                const b = buffer.split("{");
+                const b2 = b[1].split("}");
+                const header = b[0];
+                const settings = JSON.parse("{" + b2[0] + "}");
+                const footer = b2[1];
+                return { header, settings, footer };
+            }
+
+            // encode a file buffer (base64 text)
+            function encode({ header, footer, settings }) {
+                const json = JSON.stringify(settings);
+                return btoa(`${header}{${json}}${footer}`);
+            }
+
+            // turn all the settingss into stuff in the UI
+            function updateUi() {
+                console.log(data);
+            }
+
+            inputFile.addEventListener("change", async (event) => {
+                data = decode(await event.target.files[0].text());
+                data.name = event.target.files[0].name;
+                updateUi();
+            });
+        </script>
+    </body>
+</html>

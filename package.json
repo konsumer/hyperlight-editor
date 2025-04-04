@@ -1,0 +1,10 @@
+{
+  "license": "MIT",
+  "author": "konsumer",
+  "name": "hyperlight-editor",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx -y live-server docs"
+  }
+}
