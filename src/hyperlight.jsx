@@ -56,6 +56,7 @@ export function HyperlightProvider({ children }) {
       ammo: data.settings.checkAmmo || 0,
       posX: data.settings.checkX || 0,
       posY: data.settings.checkY || 0,
+      drifterkey: data.settings.drifterkey || 0,
 
       outfits: [],
       swords: [],
@@ -95,6 +96,7 @@ export function HyperlightProvider({ children }) {
     data.settings.checkAmmo = data.parsed.ammo || 0
     data.settings.checkX = data.parsed.posX || 0
     data.settings.checkY = data.parsed.posY || 0
+    data.settings.drifterkey = data.parsed.drifterkey || 0
 
     for (const t in itemTypes) {
       data.settings[itemTypesSave[t]] = ''

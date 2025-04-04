@@ -1,6 +1,7 @@
 // This is the actual input-section
 
 import { useCallback } from 'react'
+import { HomeIcon } from '@heroicons/react/24/solid'
 import { useHyperlight } from './hyperlight'
 
 export default function Editor() {
@@ -9,7 +10,7 @@ export default function Editor() {
   // use input to update current parsed
   const updateParsed = useCallback((name, color) => (e) => {
     const n = { ...current }
-    if (['health', 'healthUp', 'keys', 'gears', 'deaths', 'id', 'name', 'ammo', 'posX', 'posY'].includes(name)) {
+    if (['health', 'healthUp', 'keys', 'gears', 'deaths', 'id', 'name', 'ammo', 'posX', 'posY', 'drifterKey'].includes(name)) {
       n.parsed[name] = e.target.value
     }
     if (['outfits', 'swords', 'companions'].includes(name)) {
@@ -36,6 +37,13 @@ export default function Editor() {
     currentSet(n)
   })
 
+  const setHome = useCallback((e) => {
+    const n = { ...current }
+    n.parsed.posX = 344
+    n.parsed.posY = 322
+    currentSet(n)
+  })
+
   return current.hasVals ? (
     <div className='p-4 flex gap-2 flex-col'>
       <label>
@@ -49,7 +57,10 @@ export default function Editor() {
       <label>
         Position:
         <input type='number' className='input' value={current.parsed.posX} min={0} step={1} onChange={updateParsed('posX')} /> x
-        <input type='number' className='input' value={current.parsed.posY} min={0} step={1} onChange={updateParsed('posY')} />
+        <input type='number' className='input' value={current.parsed.posY} min={0} step={1} onChange={updateParsed('posY')} />{' '}
+        <button className='btn' onClick={setHome}>
+          <HomeIcon className='size-6' /> Home
+        </button>
       </label>
       <h2 className='text-xl mb-4 mt-4'>Stats</h2>
       <div className='flex gap-2 mt-4 flex-col'>
@@ -64,6 +75,9 @@ export default function Editor() {
         </label>
         <label>
           Ammo: <input type='number' className='input' value={current.parsed.ammo} step={0.1} min={0} max={1} onChange={updateParsed('ammo')} />
+        </label>
+        <label>
+          Drift: <input type='number' className='input' value={current.parsed.drifterKey} step={1} min={0} onChange={updateParsed('drifterKey')} />
         </label>
       </div>
       <h2 className='text-xl mb-4 mt-4'>Items</h2>
