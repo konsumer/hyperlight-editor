@@ -17,6 +17,7 @@
     <body>
         <h1>Hyperlight editor</h1>
         <p>This will allow you to edit the values in a save file.</p>
+        <p>If you are copying a file from another computer, first load it and record the ID, then load your file, and set the ID.</p>
         <p>Here are some ideas of where to find it:</p>
         <dl class="dl-horizontal well">
             <dt>OSX</dt>
@@ -31,18 +32,50 @@
             <label>Save File: <input type="file" /></label>
         </div>
 
+        <form id="value">
+
         <div>
-            <label>ID: <input type="text" name="id"/></label>
-            <small>Use this to copy a file from differnt computers.</small>
+            <label>Name: <input type="text" name="name" /></label><br />
         </div>
-        
+
+        <div>
+            <label>ID: <input type="text" name="id" /></label><br />
+            <small>Use this to copy a file from different computers.</small>
+        </div>
+
         <div><button>Save</button></div>
 
         <h2>Stats</h2>
-        <label>Deaths: <input type="number" name="deaths" value="0" step="1" min="0" max="16"/></label>
+
+        <div>
+        <label>
+            Deaths:
+            <input type="number" name="deaths" value="0" step="1" min="0" max="16" />
+        </label>
+        </div>
+
+        <div>
+        <label>
+            Health:
+            <input type="number" name="hp" value="0" step="1" min="0" max="2"/>
+        </label>
+        </div>
 
         <h2>Items</h2>
-        <label>Keys: <input type="number" name="keys" value="0" step="1" min="0" max="16"/></label>
+
+        <div>
+            <label>
+                Keys:
+                <input type="number" name="keys" value="0" step="1" min="0" max="16" />
+            </label>
+        </div>
+        <div>
+            <label>
+                Gears:
+                <input type="number" name="gear" value="0" step="1" min="0" />
+            </label>
+        </div>
+
         <h3>Shards</h3>
         <ul>
             <li>
@@ -305,13 +338,10 @@
                 </label>
             </li>
         </ul>
+        </form>
         <script>
             // shared data of current file
             let data;
-
-            const inputFile = document.querySelector('input[type="file"]');
-            const inputId = document.querySelector('input[name="id"]');
-            const btnSubmit = document.querySelector('button');
 
             // download a file
             function download(
@@ -331,29 +361,43 @@
             // decode a file buffer (base64 text)
             function decode(text) {
                 const buffer = atob(text);
-                const header = buffer.slice(0, 60)
-                const settings = JSON.parse( buffer.slice(60, -1));
+                const header = buffer.slice(0, 60);
+                const settings = JSON.parse(buffer.slice(60, -1));
                 return { header, settings };
             }
 
             // encode a file buffer (base64 text)
-            function encode({ header, settings }) {
+            function encode({ settings }) {
                 const json = JSON.stringify(settings);
+                const header = atob(document.querySelector('input[name="id"]').value)
                 return btoa(`${header}${json}\u0000`);
             }
 
-            inputFile.addEventListener("change", async (event) => {
-                data = decode(await event.target.files[0].text());
-                data.name = event.target.files[0].name;
-                inputId.value = btoa(data.header)
-                // TODO: take all settings and update UI
-                console.log(data);
-            });
+            document
+                .querySelector('input[type="file"]')
+                .addEventListener("change", async (event) => {
+                    data = decode(await event.target.files[0].text());
+                    data.name = event.target.files[0].name;
+                    document.querySelector('input[name="id"]').value = btoa(data.header);
 
-            btnSubmit.addEventListener('click', event => {
-                // TODO: read all UI values into data.settings
-                download(data.name, encode(data))
-            })
+                    // take all settings and update UI
+
+                    document.querySelector('input[name="name"]').value = data.settings.gameName
+                    document.querySelector('input[name="deaths"]').value = data.settings.charDeaths || 0;
+                    document.querySelector('input[name="gear"]').value = data.settings.gear || 0;
+                    document.querySelector('input[name="hp"]').value = data.settings.healthUP || 0;
+
+
+
+                    console.log(data);
+                });
+
+            document
+                .querySelector("button")
+                .addEventListener("click", (event) => {
+                    // TODO: read all UI values into data.settings
+                    download(data.name, encode(data));
+                });
         </script>
     </body>
 </html>
