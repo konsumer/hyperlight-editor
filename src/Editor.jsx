@@ -90,7 +90,7 @@ export default function Editor() {
     if (name === 'id') {
       idSet(e.target.value)
     } else if (name === 'gameName') {
-      gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z]/g, '') })
+      gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z 0-9]/g, '') })
     } else {
       gameSet({ ...game, [name]: e.target.value })
     }
@@ -113,22 +113,34 @@ export default function Editor() {
       {!!game && (
         <>
           <div className='flex gap-2 items-center my-2'>
-            <label htmlFor='id'>Computer ID:</label>
+            <label className='w-48' htmlFor='id'>
+              Computer ID
+            </label>
             <input id='id' type='text' className='input' value={id} onChange={handleChange('id')} />
           </div>
           <div className='flex gap-2 items-center my-2'>
-            <label htmlFor='gameName'>Player Name:</label>
+            <label className='w-48' htmlFor='gameName'>
+              Player Name
+            </label>
             <input id='gameName' type='text' className='input' value={game.gameName} onChange={handleChange('gameName')} />
           </div>
           <div className='flex gap-2 items-center my-2'>
-            <label htmlFor='checkHP'>HP:</label>
+            <label className='w-48' htmlFor='checkHP'>
+              HP
+            </label>
             <input id='checkHP' type='number' className='input' min={1} max={6} step={1} value={game.checkHP} onChange={handleChange('checkHP')} />
           </div>
           <div className='flex gap-2 items-center my-2'>
-            <div>Position:</div>
-            <input id='checkX' type='number' className='input' step={1} value={game.checkX} onChange={handleChange('checkX')} />
-            <input id='checkY' type='number' className='input' step={1} value={game.checkY} onChange={handleChange('checkY')} />
-            <button className='btn btn-sm' onClick={handleHome}>
+            <label className='w-48' htmlFor='healthUp'>
+              Additionall Health
+            </label>
+            <input id='healthUp' type='number' className='input' min={0} max={2} step={1} value={game.healthUp} onChange={handleChange('healthUp')} />
+          </div>
+          <div className='flex gap-2 items-center my-2'>
+            <div className='w-48'>Position</div>
+            <input id='checkX' type='number' className='input w-24' step={1} value={game.checkX} onChange={handleChange('checkX')} />
+            <input id='checkY' type='number' className='input w-24' step={1} value={game.checkY} onChange={handleChange('checkY')} />
+            <button className='btn btn-sm ml-2' onClick={handleHome}>
               <HomeIcon className='size-6'></HomeIcon> Home
             </button>
           </div>
