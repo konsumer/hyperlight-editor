@@ -137,6 +137,12 @@ export default function Editor() {
             <input id='healthUp' type='number' className='input' min={0} max={2} step={1} value={game.healthUp} onChange={handleChange('healthUp')} />
           </div>
           <div className='flex gap-2 items-center my-2'>
+            <label className='w-48' htmlFor='gear'>
+              Gear Bits
+            </label>
+            <input id='gear' type='number' className='input' min={0} max={98} step={1} value={game.gear} onChange={handleChange('gear')} />
+          </div>
+          <div className='flex gap-2 items-center my-2'>
             <div className='w-48'>Position</div>
             <input id='checkX' type='number' className='input w-24' step={1} value={game.checkX} onChange={handleChange('checkX')} />
             <input id='checkY' type='number' className='input w-24' step={1} value={game.checkY} onChange={handleChange('checkY')} />
