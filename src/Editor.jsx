@@ -101,7 +101,7 @@ export default function Editor() {
       gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z 0-9]/g, '') })
 
       // int fields
-    } else if (['gear', 'healthUp', 'checkHP'].includes(name)) {
+    } else if (['gear', 'healthUp', 'checkHP', 'checkX', 'checkY', 'checkRoom'].includes(name)) {
       gameSet({ ...game, [name]: parseInt(e.target.value) })
 
       // float fields
@@ -118,7 +118,8 @@ export default function Editor() {
   const handleDownload = useCallback((e) => download(name, encode({ header: atob(id), settings: game })))
 
   // called when user clicks Home button (near position)
-  const handleHome = useCallback(() => gameSet({ ...game, checkX: 344, checkY: 322 }))
+  // this will put them in bed.
+  const handleHome = useCallback(() => gameSet({ ...game, checkX: 272, checkY: 384, checkRoom: 60 }))
 
   return (
     <div>
@@ -169,10 +170,12 @@ export default function Editor() {
             <ValueInput id='ValuedashHS' onChange={handleChange('values')} value={game.values} className='input' type='number' step={1} min={0} max={800} />
           </div>
           <div className='flex gap-2 items-center my-2'>
-            <div className='w-48'>Position</div>
-            <input id='checkX' type='number' className='input w-24' step={1} value={game.checkX} onChange={handleChange('checkX')} />
-            <input id='checkY' type='number' className='input w-24' step={1} value={game.checkY} onChange={handleChange('checkY')} />
-            <button className='btn btn-sm ml-2' onClick={handleHome}>
+            <div className='w-48'>Position (x/Y/room)</div>
+            <input id='checkX' type='number' className='input w-18' step={1} value={game.checkX} onChange={handleChange('checkX')} />
+            <input id='checkY' type='number' className='input w-18' step={1} value={game.checkY} onChange={handleChange('checkY')} />
+            <input id='checkRoom' type='number' className='input w-18' step={1} value={game.checkRoom} onChange={handleChange('checkRoom')} />
+
+            <button className='btn btn-sm' onClick={handleHome}>
               <HomeIcon className='size-6'></HomeIcon> Home
             </button>
           </div>

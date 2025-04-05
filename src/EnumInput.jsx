@@ -3,36 +3,42 @@
 import { useState, useCallback } from 'react'
 
 export default function EnumInput({ id, value, onChange, options }) {
-  const handleChange = useCallback((e) => {
-    // 0 is not optional (like base gear)
-    if (Object.keys(options).includes('0') && e.target.value === '0') {
-      return
-    }
-    if (e.target.checked) {
-      onChange({ target: { value: value + `${e.target.value}+` } })
-    } else {
-      const nv = value
-        .split('+')
-        .filter((v) => v && v !== e.target.value)
-        .map((v) => `${v}+`)
-        .join('')
-      onChange({ target: { value: nv } })
-    }
-  })
+  const handleChange = useCallback(
+    (e) => {
+      // 0 is not optional (like base gear)
+      if (Object.keys(options).includes('0') && e.target.value === '0') {
+        return
+      }
+      if (e.target.checked) {
+        onChange({ target: { value: value + `${e.target.value}+` } })
+      } else {
+        const nv = value
+          .split('+')
+          .filter((v) => v && v !== e.target.value)
+          .map((v) => `${v}+`)
+          .join('')
+        onChange({ target: { value: nv } })
+      }
+    },
+    [value, options]
+  )
 
-  const handleCheckAll = useCallback((e) => {
-    if (!e.target.checked) {
-      onChange({ target: { value: Object.keys(options).includes('0') ? '0+' : '' } })
-    } else {
-      onChange({
-        target: {
-          value: Object.keys(options)
-            .map((i) => `${i}+`)
-            .join('')
-        }
-      })
-    }
-  })
+  const handleCheckAll = useCallback(
+    (e) => {
+      if (!e.target.checked) {
+        onChange({ target: { value: Object.keys(options).includes('0') ? '0+' : '' } })
+      } else {
+        onChange({
+          target: {
+            value: Object.keys(options)
+              .map((i) => `${i}+`)
+              .join('')
+          }
+        })
+      }
+    },
+    [options]
+  )
 
   const values = value.split('+').filter((v) => v)
 
