@@ -119,6 +119,7 @@ export default function Editor() {
 
   // called when user clicks Home button (near position)
   // this will put them in bed.
+  // TODO: a popup map would be cool here
   const handleHome = useCallback(() => gameSet({ ...game, checkX: 272, checkY: 384, checkRoom: 60 }))
 
   return (
@@ -170,11 +171,17 @@ export default function Editor() {
             <ValueInput id='ValuedashHS' onChange={handleChange('values')} value={game.values} className='input' type='number' step={1} min={0} max={800} />
           </div>
           <div className='flex gap-2 items-center my-2'>
-            <div className='w-48'>Position (x/Y/room)</div>
-            <input id='checkX' type='number' className='input w-18' step={1} value={game.checkX} onChange={handleChange('checkX')} />
-            <input id='checkY' type='number' className='input w-18' step={1} value={game.checkY} onChange={handleChange('checkY')} />
-            <input id='checkRoom' type='number' className='input w-18' step={1} value={game.checkRoom} onChange={handleChange('checkRoom')} />
-
+            <div className='w-48'>Position</div>
+            <div className='flex flex-col gap-2'></div>
+            <div>
+              X: <input id='checkX' type='number' className='input w-18' step={1} value={game.checkX} onChange={handleChange('checkX')} />
+            </div>
+            <div>
+              Y: <input id='checkY' type='number' className='input w-18' step={1} value={game.checkY} onChange={handleChange('checkY')} />
+            </div>
+            <div>
+              Room: <input id='checkRoom' type='number' className='input w-18' step={1} value={game.checkRoom} onChange={handleChange('checkRoom')} />
+            </div>
             <button className='btn btn-sm' onClick={handleHome}>
               <HomeIcon className='size-6'></HomeIcon> Home
             </button>
