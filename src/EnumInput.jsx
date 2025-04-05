@@ -44,7 +44,7 @@ export default function EnumInput({ id, value, onChange, options }) {
       </div>
       {Object.keys(options).map((k) => (
         <div className='flex flex-row gap-2' key={k}>
-          <input id={`${id}_${k}`} type='checkbox' className='toggle' value={k} checked={values.includes(k)} onChange={handleChange} />
+          <input disabled={k === '0'} id={`${id}_${k}`} type='checkbox' className='toggle' value={k} checked={values.includes(k)} onChange={handleChange} />
           <label htmlFor={`${id}_${k}`}>{options[k]}</label>
         </div>
       ))}
