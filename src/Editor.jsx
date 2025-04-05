@@ -37,6 +37,7 @@ export const enums = {
   cShells: { 11: 'NG+', 0: 'Red', 1: 'Blue', 2: 'Fuscia', 3: 'White', 4: 'Yellow', 5: 'Orange', 6: 'Green', 7: 'Pink', 8: 'Black', 9: 'Ochre', 10: 'Purple', 12: 'Gold' },
   bossGearbits: {
     // TODO: figure out what these are
+    // and also they don't seemm to work as it is, so I might need to tie them to bosses or something
     G12110931: 'Gear 1',
     G12110932: 'Gear 2',
     G12110933: 'Gear 3',
@@ -59,6 +60,8 @@ export const enums = {
     G15720772: 'Gear 20',
     G15720773: 'Gear 21'
   },
+
+  // TODO: I dunno how any of these enums work
   skill: {},
   rooms: {},
   wellMap: {},
@@ -87,10 +90,19 @@ export default function Editor() {
   })
 
   const handleChange = useCallback((name) => (e) => {
+    // id is just header base64 ecoded, so save-file can be passed from different computers
     if (name === 'id') {
       idSet(e.target.value)
+      // make sure it's formatted right
     } else if (name === 'gameName') {
       gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z 0-9]/g, '') })
+      // int fields
+    } else if (['gear', 'healthUp', 'checkHP', 'posX', 'posY'].includes(name)) {
+      gameSet({ ...game, [name]: parseInt(e.target.value) })
+      // float fields
+    } else if ([].includes(name)) {
+      gameSet({ ...game, [name]: parseFloat(e.target.value) })
+      // string fields
     } else {
       gameSet({ ...game, [name]: e.target.value })
     }
@@ -132,7 +144,7 @@ export default function Editor() {
           </div>
           <div className='flex gap-2 items-center my-2'>
             <label className='w-48' htmlFor='healthUp'>
-              Additionall Health
+              Additionall Health Slots
             </label>
             <input id='healthUp' type='number' className='input' min={0} max={2} step={1} value={game.healthUp} onChange={handleChange('healthUp')} />
           </div>
@@ -140,7 +152,7 @@ export default function Editor() {
             <label className='w-48' htmlFor='gear'>
               Gear Bits
             </label>
-            <input id='gear' type='number' className='input' min={0} max={98} step={1} value={game.gear} onChange={handleChange('gear')} />
+            <input id='gear' type='number' className='input' min={0} max={186} step={1} value={game.gear} onChange={handleChange('gear')} />
           </div>
           <div className='flex gap-2 items-center my-2'>
             <div className='w-48'>Position</div>
