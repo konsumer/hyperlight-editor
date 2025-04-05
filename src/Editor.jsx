@@ -1,231 +1,149 @@
 // This is the actual input-section
 
-import { useCallback } from 'react'
-import { HomeIcon } from '@heroicons/react/24/solid'
-import { useHyperlight } from './hyperlight'
+import { useState, useCallback } from 'react'
+
+import EnumInput from './EnumInput'
+
+// decode a file buffer (base64 text)
+export function decode(text) {
+  const buffer = atob(text)
+  const header = buffer.slice(0, 60)
+  const settings = JSON.parse(buffer.slice(60, -1))
+  return { header, settings }
+}
+
+// encode a file buffer (base64 text)
+export function encode({ header, settings }) {
+  const json = JSON.stringify(settings)
+  return btoa(`${header}${json}\u0000`)
+}
+
+// download a file
+export function download(filename, contents, type = 'application/octet-stream') {
+  const blob = new Blob([contents], { type })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+// fields that use plus seperator like "4+1+0+2+3+"
+export const enums = {
+  cCapes: { 11: 'NG+', 0: 'Red', 1: 'Blue', 2: 'Fuscia', 3: 'White', 4: 'Yellow', 5: 'Orange', 6: 'Green', 7: 'Pink', 8: 'Black', 9: 'Ochre', 10: 'Purple' },
+  cSwords: { 11: 'NG+', 0: 'Red', 1: 'Blue', 2: 'Fuscia', 3: 'White', 4: 'Yellow', 5: 'Orange', 6: 'Green', 7: 'Pink', 8: 'Black', 9: 'Ochre', 10: 'Purple' },
+  cShells: { 11: 'NG+', 0: 'Red', 1: 'Blue', 2: 'Fuscia', 3: 'White', 4: 'Yellow', 5: 'Orange', 6: 'Green', 7: 'Pink', 8: 'Black', 9: 'Ochre', 10: 'Purple', 12: 'Gold' },
+  bossGearbits: {
+    // TODO: figure out what these are
+    G12110931: 'Gear 1',
+    G12110932: 'Gear 2',
+    G12110933: 'Gear 3',
+    G19543222: 'Gear 4',
+    G19543223: 'Gear 5',
+    G19543221: 'Gear 6',
+    G24527052: 'Gear 7',
+    G24527053: 'Gear 8',
+    G24527051: 'Gear 9',
+    G15051971: 'Gear 10',
+    G15051972: 'Gear 11',
+    G15051973: 'Gear 12',
+    G14363903: 'Gear 13',
+    G14363901: 'Gear 14',
+    G14363902: 'Gear 15',
+    G16436761: 'Gear 16',
+    G16436762: 'Gear 17',
+    G16436763: 'Gear 18',
+    G15720771: 'Gear 19',
+    G15720772: 'Gear 20',
+    G15720773: 'Gear 21'
+  },
+  skill: {},
+  rooms: {},
+  wellMap: {},
+  tablet: {},
+  skill: {},
+  warp: {},
+  events: {},
+  cues: {},
+  well: {},
+  sc: {},
+  healthKits: {}
+}
+
+const enumNames = Object.keys(enums)
 
 export default function Editor() {
-  const { current, currentSet } = useHyperlight()
+  const [game, gameSet] = useState()
+  const [name, nameSet] = useState()
+  const [id, idSet] = useState()
 
-  // use input to update current parsed
-  const updateParsed = useCallback((name, color) => (e) => {
-    const n = { ...current }
-    if (['health', 'healthUp', 'keys', 'gears', 'deaths', 'id', 'name', 'ammo', 'posX', 'posY', 'drifterKey'].includes(name)) {
-      n.parsed[name] = e.target.value
-    }
-    if (['outfits', 'swords', 'companions'].includes(name)) {
-      if (e.target.checked) {
-        n.parsed[name].push(color)
-      } else {
-        n.parsed[name] = n.parsed[name].filter((i) => i !== color)
-      }
-    }
-    currentSet(n)
+  const handleFileChange = useCallback(async (e) => {
+    const { header, settings } = decode(await e.target.files[0].text())
+    nameSet(e.target.files[0].name)
+    idSet(btoa(header))
+    gameSet(settings)
   })
 
-  const checkAll = useCallback((name) => (e) => {
-    const n = { ...current }
-    if (!e.target.checked) {
-      n.parsed[name] = ['red']
+  const handleChange = useCallback((name) => (e) => {
+    if (name === 'id') {
+      idSet(e.target.value)
+    } else if (name === 'gameName') {
+      gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z]/g, '') })
     } else {
-      n.parsed[name] = ['red', 'blue', 'fuscia', 'white', 'yellow', 'orange', 'green', 'pink', 'black', 'ochre', 'purple']
-      if (name === 'companions') {
-        n.parsed.companions.push('gold')
-      }
+      gameSet({ ...game, [name]: e.target.value })
     }
-    console.log(n)
-    currentSet(n)
   })
 
-  const setHome = useCallback((e) => {
-    const n = { ...current }
-    n.parsed.posX = 344
-    n.parsed.posY = 322
-    currentSet(n)
-  })
+  const handleDownload = useCallback((e) => download(name, encode({ header: atob(id), settings: game })))
 
-  return current.hasVals ? (
-    <div className='p-4 flex gap-2 flex-col'>
-      <label>
-        Computer ID: <input type='text' className='input' value={current.parsed.id} onChange={updateParsed('id')} />
-      </label>
+  return (
+    <div>
+      <div className='flex flex-row gap-2 items-center mb-4'>
+        <input type='file' className='file-input my-2' onChange={handleFileChange} />
+        {!!game && (
+          <button className='btn btn-primary btn-sm' onClick={handleDownload}>
+            Download
+          </button>
+        )}
+      </div>
+      {!!game && (
+        <>
+          <div className='flex gap-2 items-center my-2'>
+            <label htmlFor='id'>Computer ID:</label>
+            <input id='id' type='text' className='input' value={id} onChange={handleChange('id')} />
+          </div>
+          <div className='flex gap-2 items-center my-2'>
+            <label htmlFor='gameName'>Player Name:</label>
+            <input id='gameName' type='text' className='input' value={game.gameName} onChange={handleChange('gameName')} />
+          </div>
+          <div className='flex gap-8'>
+            <div className='flex gap-2 my-2'>
+              <h3 className='font-bold'>Capes</h3>
+              <EnumInput id='cCapes' value={game.cCapes} onChange={handleChange('cCapes')} options={enums.cCapes}></EnumInput>
+            </div>
+            <div className='flex gap-2 my-2'>
+              <h3 className='font-bold'>Swords</h3>
+              <EnumInput id='cSwords' value={game.cSwords} onChange={handleChange('cSwords')} options={enums.cSwords}></EnumInput>
+            </div>
+            <div className='flex gap-2 my-2'>
+              <h3 className='font-bold'>Companions</h3>
+              <EnumInput id='cShells' value={game.cShells} onChange={handleChange('cShells')} options={enums.cShells}></EnumInput>
+            </div>
+            <div className='flex gap-2 my-2'>
+              <h3 className='font-bold'>Boss Gear</h3>
+              <EnumInput id='bossGearbits' value={game.bossGearbits} onChange={handleChange('bossGearbits')} options={enums.bossGearbits}></EnumInput>
+            </div>
+          </div>
+        </>
+      )}
 
-      <label>
-        Player Name: <input type='text' className='input' value={current.parsed.name} onChange={updateParsed('name')} />
-      </label>
-
-      <label>
-        Position:
-        <input type='number' className='input' value={current.parsed.posX} min={0} step={1} onChange={updateParsed('posX')} /> x
-        <input type='number' className='input' value={current.parsed.posY} min={0} step={1} onChange={updateParsed('posY')} />{' '}
-        <button className='btn' onClick={setHome}>
-          <HomeIcon className='size-6' /> Home
-        </button>
-      </label>
-      <h2 className='text-xl mb-4 mt-4'>Stats</h2>
-      <div className='flex gap-2 mt-4 flex-col'>
-        <label>
-          Deaths: <input type='number' className='input' value={current.parsed.deaths} step={1} min={0} onChange={updateParsed('deaths')} />
-        </label>
-        <label>
-          Current Health: <input type='number' className='input' value={current.parsed.health} min={1} max={8} onChange={updateParsed('health')} />
-        </label>
-        <label>
-          Additional Health: <input type='number' className='input' value={current.parsed.healthUp} step={1} min={0} max={3} onChange={updateParsed('healthUp')} />
-        </label>
-        <label>
-          Ammo: <input type='number' className='input' value={current.parsed.ammo} step={0.1} min={0} max={1} onChange={updateParsed('ammo')} />
-        </label>
-        <label>
-          Drift: <input type='number' className='input' value={current.parsed.drifterKey} step={1} min={0} onChange={updateParsed('drifterKey')} />
-        </label>
-      </div>
-      <h2 className='text-xl mb-4 mt-4'>Items</h2>
-      <div className='flex gap-2 mt-4 flex-col'>
-        <label>
-          Keys: <input type='number' className='input' value={current.parsed.keys} step={1} min={0} max={16} onChange={updateParsed('keys')} />
-        </label>
-        <label>
-          Gears: <input type='number' className='input' value={current.parsed.gears} step={1} min={0} max={16} onChange={updateParsed('gears')} />
-        </label>
-      </div>
-      <div className='flex gap-2 mt-4'>
-        <div>
-          <h3 className='text-lg mb-2'>Outfits</h3>
-          <div className='flex flex-col gap-2'>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.length >= 11} onChange={checkAll('outfits')} /> All
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('ngplus')} onChange={updateParsed('outfits', 'ngplus')} /> NG+
-            </label>
-            <label>
-              <input disabled type='checkbox' className='toggle' checked={current.parsed.outfits.includes('red')} /> Red
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('blue')} onChange={updateParsed('outfits', 'blue')} /> Blue
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('fuscia')} onChange={updateParsed('outfits', 'fuscia')} /> Fuscia
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('white')} onChange={updateParsed('outfits', 'white')} /> White
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('yellow')} onChange={updateParsed('outfits', 'yellow')} /> Yellow
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('orange')} onChange={updateParsed('outfits', 'orange')} /> Orange
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('green')} onChange={updateParsed('outfits', 'green')} /> Green/Blue
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('pink')} onChange={updateParsed('outfits', 'pink')} /> Pink
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('black')} onChange={updateParsed('outfits', 'black')} /> Black
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('ochre')} onChange={updateParsed('outfits', 'ochre')} /> Ochre
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.outfits.includes('purple')} onChange={updateParsed('outfits', 'purple')} /> Purple
-            </label>
-          </div>
-        </div>
-        <div>
-          <h3 className='text-lg mb-2'>Swords</h3>
-          <div className='flex flex-col gap-2'>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.length >= 11} onChange={checkAll('swords')} /> All
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('ngplus')} onChange={updateParsed('swords', 'ngplus')} /> NG+
-            </label>
-            <label>
-              <input disabled type='checkbox' className='toggle' checked={current.parsed.swords.includes('red')} /> Red
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('blue')} onChange={updateParsed('swords', 'blue')} /> Blue
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('fuscia')} onChange={updateParsed('swords', 'fuscia')} /> Fuscia
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('white')} onChange={updateParsed('swords', 'white')} /> White
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('yellow')} onChange={updateParsed('swords', 'yellow')} /> Yellow
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('orange')} onChange={updateParsed('swords', 'orange')} /> Orange
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('green')} onChange={updateParsed('swords', 'green')} /> Green/Blue
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('pink')} onChange={updateParsed('swords', 'pink')} /> Pink
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('black')} onChange={updateParsed('swords', 'black')} /> Black
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('ochre')} onChange={updateParsed('swords', 'ochre')} /> Ochre
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.swords.includes('purple')} onChange={updateParsed('swords', 'purple')} /> Purple
-            </label>
-          </div>
-        </div>
-        <div>
-          <h3 className='text-lg mb-2'>Companions</h3>
-          <div className='flex flex-col gap-2'>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.length >= 12} onChange={checkAll('companions')} /> All
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('ngplus')} onChange={updateParsed('companions', 'ngplus')} /> NG+
-            </label>
-            <label>
-              <input disabled type='checkbox' className='toggle' checked={current.parsed.companions.includes('red')} /> Red
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('blue')} onChange={updateParsed('companions', 'blue')} /> Blue
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('fuscia')} onChange={updateParsed('companions', 'fuscia')} /> Fuscia
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('white')} onChange={updateParsed('companions', 'white')} /> White
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('yellow')} onChange={updateParsed('companions', 'yellow')} /> Yellow
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('orange')} onChange={updateParsed('companions', 'orange')} /> Orange
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('green')} onChange={updateParsed('companions', 'green')} /> Green/Blue
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('pink')} onChange={updateParsed('companions', 'pink')} /> Pink
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('black')} onChange={updateParsed('companions', 'black')} /> Black
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('ochre')} onChange={updateParsed('companions', 'ochre')} /> Ochre
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('purple')} onChange={updateParsed('companions', 'purple')} /> Purple
-            </label>
-            <label>
-              <input type='checkbox' className='toggle' checked={current.parsed.companions.includes('gold')} onChange={updateParsed('companions', 'gold')} /> Gold (Kickstarter)
-            </label>
-          </div>
-        </div>
-      </div>
+      {!!game && (
+        <details>
+          <summary>Debug</summary>
+          <pre className='mt-8'>{JSON.stringify({ name, id, game }, null, 2)}</pre>
+        </details>
+      )}
     </div>
-  ) : null
+  )
 }

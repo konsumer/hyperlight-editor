@@ -1,4 +1,3 @@
-import Uploader from './Uploader'
 import Editor from './Editor'
 
 function App() {
@@ -19,9 +18,6 @@ function App() {
           <span className='font-bold'>Linux</span>: <code>~/.config/HyperLightDrifter</code>
         </li>
       </ul>
-
-      <p className='my-4'>Choose your save-file to edit.</p>
-      <Uploader />
       <Editor></Editor>
     </div>
   )
