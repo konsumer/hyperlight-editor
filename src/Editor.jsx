@@ -1,6 +1,7 @@
 // This is the actual input-section
 
 import { useState, useCallback } from 'react'
+import { FolderArrowDownIcon, HomeIcon } from '@heroicons/react/24/solid'
 
 import EnumInput from './EnumInput'
 
@@ -97,13 +98,15 @@ export default function Editor() {
 
   const handleDownload = useCallback((e) => download(name, encode({ header: atob(id), settings: game })))
 
+  const handleHome = useCallback(() => gameSet({ ...game, checkX: 344, checkY: 322 }))
+
   return (
     <div>
       <div className='flex flex-row gap-2 items-center mb-4'>
         <input type='file' className='file-input my-2' onChange={handleFileChange} />
         {!!game && (
-          <button className='btn btn-primary btn-sm' onClick={handleDownload}>
-            Download
+          <button className='btn btn-sm btn-primary' onClick={handleDownload}>
+            <FolderArrowDownIcon className='size-6'></FolderArrowDownIcon> Download
           </button>
         )}
       </div>
@@ -117,6 +120,19 @@ export default function Editor() {
             <label htmlFor='gameName'>Player Name:</label>
             <input id='gameName' type='text' className='input' value={game.gameName} onChange={handleChange('gameName')} />
           </div>
+          <div className='flex gap-2 items-center my-2'>
+            <label htmlFor='checkHP'>HP:</label>
+            <input id='checkHP' type='number' className='input' min={1} max={6} step={1} value={game.checkHP} onChange={handleChange('checkHP')} />
+          </div>
+          <div className='flex gap-2 items-center my-2'>
+            <div>Position:</div>
+            <input id='checkX' type='number' className='input' step={1} value={game.checkX} onChange={handleChange('checkX')} />
+            <input id='checkY' type='number' className='input' step={1} value={game.checkY} onChange={handleChange('checkY')} />
+            <button className='btn btn-sm' onClick={handleHome}>
+              <HomeIcon className='size-6'></HomeIcon> Home
+            </button>
+          </div>
+
           <div className='flex gap-8'>
             <div className='flex gap-2 my-2'>
               <h3 className='font-bold'>Capes</h3>
