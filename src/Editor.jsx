@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react'
 import { FolderArrowDownIcon, HomeIcon } from '@heroicons/react/24/solid'
 
 import EnumInput from './EnumInput'
+import ValueInput from './ValueInput'
 
 // decode a file buffer (base64 text)
 export function decode(text) {
@@ -89,27 +90,34 @@ export default function Editor() {
     gameSet(settings)
   })
 
+  // TODO: break these into different callbacks?
   const handleChange = useCallback((name) => (e) => {
     // id is just header base64 ecoded, so save-file can be passed from different computers
     if (name === 'id') {
       idSet(e.target.value)
-      // make sure it's formatted right
+
+      // gameName requires some formatting
     } else if (name === 'gameName') {
       gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z 0-9]/g, '') })
+
       // int fields
-    } else if (['gear', 'healthUp', 'checkHP', 'posX', 'posY'].includes(name)) {
+    } else if (['gear', 'healthUp', 'checkHP'].includes(name)) {
       gameSet({ ...game, [name]: parseInt(e.target.value) })
+
       // float fields
     } else if ([].includes(name)) {
       gameSet({ ...game, [name]: parseFloat(e.target.value) })
+
       // string fields
     } else {
       gameSet({ ...game, [name]: e.target.value })
     }
   })
 
+  // called when user clicks download button
   const handleDownload = useCallback((e) => download(name, encode({ header: atob(id), settings: game })))
 
+  // called when user clicks Home button (near position)
   const handleHome = useCallback(() => gameSet({ ...game, checkX: 344, checkY: 322 }))
 
   return (
@@ -153,6 +161,12 @@ export default function Editor() {
               Gear Bits
             </label>
             <input id='gear' type='number' className='input' min={0} max={186} step={1} value={game.gear} onChange={handleChange('gear')} />
+          </div>
+          <div className='flex gap-2 items-center my-2'>
+            <label className='w-48' htmlFor='ValuedashHS'>
+              Dash Challenge
+            </label>
+            <ValueInput id='ValuedashHS' onChange={handleChange('values')} value={game.values} className='input' type='number' step={1} min={0} max={800} />
           </div>
           <div className='flex gap-2 items-center my-2'>
             <div className='w-48'>Position</div>
