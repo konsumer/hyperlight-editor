@@ -90,9 +90,10 @@ export default function Editor() {
     nameSet(e.target.files[0].name)
   })
 
-  // TODO: break these into different callbacks?
   const handleChange = useCallback(
-    (name) => (e) => {
+    (e) => {
+      const { name } = e.target
+
       // id is just header base64 ecoded, so save-file can be passed from different computers
       if (name === 'id') {
         idSet(e.target.value)
@@ -148,39 +149,39 @@ export default function Editor() {
         <div className='flex flex-col gap-2'>
           <label className='input w-full'>
             <span className='label'>Computer ID</span>
-            <input id='id' type='text' className='input' value={id} onChange={handleChange('id')} />
+            <input name='id' type='text' className='input' value={id} onChange={handleChange} />
           </label>
 
           <label className='input w-full'>
             <span className='label'>Player Name</span>
-            <input id='gameName' type='text' className='input' value={game.gameName} onChange={handleChange('gameName')} />
+            <input name='gameName' type='text' className='input' value={game.gameName} onChange={handleChange} />
           </label>
 
           <label className='input w-full'>
             <span className='label'>HP</span>
-            <input id='checkHP' type='number' className='input' min={1} max={6} step={1} value={game.checkHP} onChange={handleChange('checkHP')} />
+            <input name='checkHP' type='number' className='input' min={1} max={6} step={1} value={game.checkHP} onChange={handleChange} />
           </label>
 
           <label className='input w-full'>
             <span className='label'>Additionall Health Slots</span>
-            <input id='healthUp' type='number' className='input' min={0} max={2} step={1} value={game.healthUp} onChange={handleChange('healthUp')} />
+            <input name='healthUp' type='number' className='input' min={0} max={2} step={1} value={game.healthUp} onChange={handleChange} />
           </label>
 
           <label className='input w-full'>
             <span className='label'>Gear Bits</span>
-            <input id='gear' type='number' className='input' min={0} max={186} step={1} value={game.gear} onChange={handleChange('gear')} />
+            <input name='gear' type='number' className='input' min={0} max={186} step={1} value={game.gear} onChange={handleChange} />
           </label>
 
           <label className='input w-full'>
             <span className='label'>Dash Challenge</span>
-            <ValueInput id='ValuedashHS' onChange={handleChange('values')} value={game.values} className='input' type='number' step={1} min={0} max={800} />
+            <ValueInput name='values' fieldName='ValuedashHS' onChange={handleChange} value={game.values} className='input' type='number' step={1} min={0} max={800} />
           </label>
 
           <label className='input w-full'>
             <span className='label'>Position</span>
-            X: <input id='checkX' type='number' step={1} value={game.checkX} onChange={handleChange('checkX')} />
-            Y: <input id='checkY' type='number' step={1} value={game.checkY} onChange={handleChange('checkY')} />
-            Room: <input id='checkRoom' type='number' step={1} value={game.checkRoom} onChange={handleChange('checkRoom')} />
+            X: <input name='checkX' type='number' step={1} value={game.checkX} onChange={handleChange} />
+            Y: <input name='checkY' type='number' step={1} value={game.checkY} onChange={handleChange} />
+            Room: <input name='checkRoom' type='number' step={1} value={game.checkRoom} onChange={handleChange} />
             <button className='btn btn-sm btn-accent' onClick={handleHome}>
               <HomeIcon className='size-6' /> Home
             </button>
@@ -189,19 +190,19 @@ export default function Editor() {
           <div className='flex flex-wrap gap-8'>
             <div className='flex gap-2 my-2'>
               <h3 className='font-bold'>Capes</h3>
-              <EnumInput id='cCapes' value={game.cCapes} onChange={handleChange('cCapes')} options={enums.cCapes}></EnumInput>
+              <EnumInput name='cCapes' value={game.cCapes} onChange={handleChange} options={enums.cCapes}></EnumInput>
             </div>
             <div className='flex gap-2 my-2'>
               <h3 className='font-bold'>Swords</h3>
-              <EnumInput id='cSwords' value={game.cSwords} onChange={handleChange('cSwords')} options={enums.cSwords}></EnumInput>
+              <EnumInput name='cSwords' value={game.cSwords} onChange={handleChange} options={enums.cSwords}></EnumInput>
             </div>
             <div className='flex gap-2 my-2'>
               <h3 className='font-bold'>Companions</h3>
-              <EnumInput id='cShells' value={game.cShells} onChange={handleChange('cShells')} options={enums.cShells}></EnumInput>
+              <EnumInput name='cShells' value={game.cShells} onChange={handleChange} options={enums.cShells}></EnumInput>
             </div>
             <div className='flex gap-2 my-2'>
               <h3 className='font-bold'>Boss Gear</h3>
-              <EnumInput id='bossGearbits' value={game.bossGearbits} onChange={handleChange('bossGearbits')} options={enums.bossGearbits}></EnumInput>
+              <EnumInput name='bossGearbits' value={game.bossGearbits} onChange={handleChange} options={enums.bossGearbits}></EnumInput>
             </div>
           </div>
         </div>

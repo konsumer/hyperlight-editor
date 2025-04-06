@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 
-export default function EnumInput({ id, value, onChange, options }) {
+export default function EnumInput({ name, value, onChange, options }) {
   const [checks, checksSet] = useState([])
   const [allChechecked, allChecheckedSet] = useState(false)
 
@@ -19,29 +19,29 @@ export default function EnumInput({ id, value, onChange, options }) {
     } else {
       c = c.filter((v) => v !== e.target.value)
     }
-    onChange({ target: { value: c.map((v) => `${v}+`).join('') } })
+    onChange({ target: { name, value: c.map((v) => `${v}+`).join('') } })
   }
 
   const handleCheckAll = (e) => {
     const o = Object.keys(options)
     if (e.target.checked) {
-      onChange({ target: { value: o.map((k) => `${k}+`).join('') } })
+      onChange({ target: { name, value: o.map((k) => `${k}+`).join('') } })
     } else {
-      onChange({ target: { value: o.includes('0') ? '0+' : '' } })
+      onChange({ target: { name, value: o.includes('0') ? '0+' : '' } })
     }
   }
 
   return (
     <div className='flex flex-col gap-2'>
-      <div className='flex flex-row gap-2'>
-        <input id={`${id}_ALL`} type='checkbox' className='toggle' checked={allChechecked} onChange={handleCheckAll} />
-        <label htmlFor={`${id}_ALL`}>All</label>
-      </div>
+      <label className='flex flex-row gap-2'>
+        <input type='checkbox' className='toggle' checked={allChechecked} onChange={handleCheckAll} />
+        <span>All</span>
+      </label>
       {Object.keys(options).map((k) => (
-        <div className='flex flex-row gap-2' key={k}>
-          <input disabled={k === '0'} id={`${id}_${k}`} type='checkbox' className='toggle' value={k} checked={checks.includes(k)} onChange={handleChange} />
-          <label htmlFor={`${id}_${k}`}>{options[k]}</label>
-        </div>
+        <label key={k} className='flex flex-row gap-2'>
+          <input disabled={k === '0'} type='checkbox' className='toggle' value={k} checked={checks.includes(k)} onChange={handleChange} />
+          <span>{options[k]}</span>
+        </label>
       ))}
     </div>
   )
