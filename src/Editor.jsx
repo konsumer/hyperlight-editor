@@ -114,6 +114,11 @@ export default function Editor() {
     }
   })
 
+  // this allows editing the JSON
+  const handleGameChange = useCallback((e) => {
+    gameSet(JSON.parse(e.target.value))
+  })
+
   // called when user clicks download button
   const handleDownload = useCallback((e) => download(name, encode({ header: atob(id), settings: game })))
 
@@ -211,7 +216,7 @@ export default function Editor() {
       {!!game && (
         <details>
           <summary>Debug</summary>
-          <pre className='mt-8'>{JSON.stringify({ name, id, game }, null, 2)}</pre>
+          <textarea value={JSON.stringify(game, null, 2)} className='textarea h-128 w-full' onChange={handleGameChange}></textarea>
         </details>
       )}
     </div>
