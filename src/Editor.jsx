@@ -138,50 +138,54 @@ export default function Editor() {
           <>
             <ButtonGameJSON value={game} onSubmit={gameSet} />
             <button className='btn btn-sm btn-primary' onClick={handleDownload}>
-              <FolderArrowDownIcon className='size-6'></FolderArrowDownIcon> Download
+              <FolderArrowDownIcon className='size-6' /> Download
             </button>
           </>
         )}
       </div>
       {!!game && (
-        <>
-          <div className='flex gap-2 items-center my-2'>
-            <label className='w-48' htmlFor='id'>
-              Computer ID
-            </label>
+        <div className='flex flex-col gap-2'>
+          <label className='input w-128'>
+            <span className='label'>Computer ID</span>
             <input id='id' type='text' className='input' value={id} onChange={handleChange('id')} />
-          </div>
-          <div className='flex gap-2 items-center my-2'>
-            <label className='w-48' htmlFor='gameName'>
-              Player Name
-            </label>
+          </label>
+
+          <label className='input w-128'>
+            <span className='label'>Player Name</span>
             <input id='gameName' type='text' className='input' value={game.gameName} onChange={handleChange('gameName')} />
-          </div>
-          <div className='flex gap-2 items-center my-2'>
-            <label className='w-48' htmlFor='checkHP'>
-              HP
-            </label>
+          </label>
+
+          <label className='input w-128'>
+            <span className='label'>HP</span>
             <input id='checkHP' type='number' className='input' min={1} max={6} step={1} value={game.checkHP} onChange={handleChange('checkHP')} />
-          </div>
-          <div className='flex gap-2 items-center my-2'>
-            <label className='w-48' htmlFor='healthUp'>
-              Additionall Health Slots
-            </label>
+          </label>
+
+          <label className='input w-128'>
+            <span className='label'>Additionall Health Slots</span>
             <input id='healthUp' type='number' className='input' min={0} max={2} step={1} value={game.healthUp} onChange={handleChange('healthUp')} />
-          </div>
-          <div className='flex gap-2 items-center my-2'>
-            <label className='w-48' htmlFor='gear'>
-              Gear Bits
-            </label>
+          </label>
+
+          <label className='input w-128'>
+            <span className='label'>Gear Bits</span>
             <input id='gear' type='number' className='input' min={0} max={186} step={1} value={game.gear} onChange={handleChange('gear')} />
-          </div>
-          <div className='flex gap-2 items-center my-2'>
-            <label className='w-48' htmlFor='ValuedashHS'>
-              Dash Challenge
-            </label>
+          </label>
+
+          <label className='input w-128'>
+            <span className='label'>Dash Challenge</span>
             <ValueInput id='ValuedashHS' onChange={handleChange('values')} value={game.values} className='input' type='number' step={1} min={0} max={800} />
-          </div>
-          <div className='flex gap-2 items-center my-2'>
+          </label>
+
+          <label className='input w-128'>
+            <span className='label'>Position</span>
+            X: <input id='checkX' type='number' step={1} value={game.checkX} onChange={handleChange('checkX')} />
+            Y: <input id='checkY' type='number' step={1} value={game.checkY} onChange={handleChange('checkY')} />
+            Room: <input id='checkRoom' type='number' step={1} value={game.checkRoom} onChange={handleChange('checkRoom')} />
+            <button className='btn btn-sm btn-accent' onClick={handleHome}>
+              <HomeIcon className='size-6' /> Home
+            </button>
+          </label>
+
+          {/* <div className='flex gap-2 items-center my-2'>
             <div className='w-48'>Position</div>
             <div className='flex flex-col gap-2'></div>
             <div>
@@ -196,7 +200,7 @@ export default function Editor() {
             <button className='btn btn-sm' onClick={handleHome}>
               <HomeIcon className='size-6'></HomeIcon> Home
             </button>
-          </div>
+          </div>*/}
 
           <div className='flex gap-8'>
             <div className='flex gap-2 my-2'>
@@ -216,7 +220,7 @@ export default function Editor() {
             <h3 className='font-bold'>Boss Gear</h3>
             <EnumInput id='bossGearbits' value={game.bossGearbits} onChange={handleChange('bossGearbits')} options={enums.bossGearbits}></EnumInput>
           </div>
-        </>
+        </div>
       )}
     </div>
   )

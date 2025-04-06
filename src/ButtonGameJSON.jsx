@@ -1,4 +1,5 @@
 import { useCallback, useRef, useEffect } from 'react'
+import { CodeBracketSquareIcon } from '@heroicons/react/24/solid'
 
 export default function ButtonGameJSON({ value, onSubmit }) {
 	const r = useRef()
@@ -17,7 +18,8 @@ export default function ButtonGameJSON({ value, onSubmit }) {
 
 	return (
 		<>
-			<button className='btn' onClick={() => document.getElementById('my_modal_1').showModal()}>
+			<button className='btn btn-sm btn-accent' onClick={() => document.getElementById('my_modal_1').showModal()}>
+				<CodeBracketSquareIcon className='size-6' />
 				JSON
 			</button>
 			<dialog id='my_modal_1' className='modal'>
