@@ -18,20 +18,17 @@ export default function ValueInput({ id, onChange, value, ...props }) {
 		}
 	}, [value])
 
-	const handleChange = useCallback(
-		(e) => {
-			let nv
-			const regexThisField = new RegExp(`${id}=([\-a-zA-Z0-9]+)>`)
-			if (regexThisField.exec(value)) {
-				nv = value.replace(regexThisField, `${id}=${e.target.value}>`)
-			} else {
-				nv = value + `${id}=${e.target.value}>`
-			}
-			onChange({ target: { value: nv } })
-			inputValueSet(e.target.value)
-		},
-		[value]
-	)
+	const handleChange = (e) => {
+		let nv
+		const regexThisField = new RegExp(`${id}=([\-a-zA-Z0-9]+)>`)
+		if (regexThisField.exec(value)) {
+			nv = value.replace(regexThisField, `${id}=${e.target.value}>`)
+		} else {
+			nv = value + `${id}=${e.target.value}>`
+		}
+		onChange({ target: { value: nv } })
+		inputValueSet(e.target.value)
+	}
 
 	return <input id={id} {...props} value={inputValue} onChange={handleChange} />
 }
