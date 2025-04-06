@@ -186,7 +186,7 @@ export default function Editor() {
             </button>
           </label>
 
-          <div className='flex gap-8'>
+          <div className='flex flex-wrap gap-8'>
             <div className='flex gap-2 my-2'>
               <h3 className='font-bold'>Capes</h3>
               <EnumInput id='cCapes' value={game.cCapes} onChange={handleChange('cCapes')} options={enums.cCapes}></EnumInput>
@@ -199,10 +199,10 @@ export default function Editor() {
               <h3 className='font-bold'>Companions</h3>
               <EnumInput id='cShells' value={game.cShells} onChange={handleChange('cShells')} options={enums.cShells}></EnumInput>
             </div>
-          </div>
-          <div className='flex gap-2 my-2'>
-            <h3 className='font-bold'>Boss Gear</h3>
-            <EnumInput id='bossGearbits' value={game.bossGearbits} onChange={handleChange('bossGearbits')} options={enums.bossGearbits}></EnumInput>
+            <div className='flex gap-2 my-2'>
+              <h3 className='font-bold'>Boss Gear</h3>
+              <EnumInput id='bossGearbits' value={game.bossGearbits} onChange={handleChange('bossGearbits')} options={enums.bossGearbits}></EnumInput>
+            </div>
           </div>
         </div>
       )}
