@@ -91,28 +91,31 @@ export default function Editor() {
   })
 
   // TODO: break these into different callbacks?
-  const handleChange = useCallback((name) => (e) => {
-    // id is just header base64 ecoded, so save-file can be passed from different computers
-    if (name === 'id') {
-      idSet(e.target.value)
+  const handleChange = useCallback(
+    (name) => (e) => {
+      // id is just header base64 ecoded, so save-file can be passed from different computers
+      if (name === 'id') {
+        idSet(e.target.value)
 
-      // gameName requires some formatting
-    } else if (name === 'gameName') {
-      gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z 0-9]/g, '') })
+        // gameName requires some formatting
+      } else if (name === 'gameName') {
+        gameSet({ ...game, gameName: e.target.value.toUpperCase().replace(/[^A-Z 0-9]/g, '') })
 
-      // int fields
-    } else if (['gear', 'healthUp', 'checkHP', 'checkX', 'checkY', 'checkRoom'].includes(name)) {
-      gameSet({ ...game, [name]: parseInt(e.target.value) })
+        // int fields
+      } else if (['gear', 'healthUp', 'checkHP', 'checkX', 'checkY', 'checkRoom'].includes(name)) {
+        gameSet({ ...game, [name]: parseInt(e.target.value) })
 
-      // float fields
-    } else if ([].includes(name)) {
-      gameSet({ ...game, [name]: parseFloat(e.target.value) })
+        // float fields
+      } else if ([].includes(name)) {
+        gameSet({ ...game, [name]: parseFloat(e.target.value) })
 
-      // string fields
-    } else {
-      gameSet({ ...game, [name]: e.target.value })
-    }
-  })
+        // string fields
+      } else {
+        gameSet({ ...game, [name]: e.target.value })
+      }
+    },
+    [game]
+  )
 
   // this allows editing the JSON
   const handleGameChange = useCallback((e) => {
