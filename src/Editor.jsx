@@ -132,8 +132,8 @@ export default function Editor() {
 
   return (
     <div>
-      <div className='flex flex-row gap-2 items-center mb-4'>
-        <input type='file' className='file-input my-2' onChange={handleFileChange} />
+      <div className='w-full my-4 flex flex-row gap-2 items-center'>
+        <input type='file' className='file-input flex-grow' onChange={handleFileChange} />
         {!!game && (
           <>
             <ButtonGameJSON value={game} onSubmit={gameSet} />
@@ -143,39 +143,40 @@ export default function Editor() {
           </>
         )}
       </div>
+
       {!!game && (
         <div className='flex flex-col gap-2'>
-          <label className='input w-128'>
+          <label className='input w-full'>
             <span className='label'>Computer ID</span>
             <input id='id' type='text' className='input' value={id} onChange={handleChange('id')} />
           </label>
 
-          <label className='input w-128'>
+          <label className='input w-full'>
             <span className='label'>Player Name</span>
             <input id='gameName' type='text' className='input' value={game.gameName} onChange={handleChange('gameName')} />
           </label>
 
-          <label className='input w-128'>
+          <label className='input w-full'>
             <span className='label'>HP</span>
             <input id='checkHP' type='number' className='input' min={1} max={6} step={1} value={game.checkHP} onChange={handleChange('checkHP')} />
           </label>
 
-          <label className='input w-128'>
+          <label className='input w-full'>
             <span className='label'>Additionall Health Slots</span>
             <input id='healthUp' type='number' className='input' min={0} max={2} step={1} value={game.healthUp} onChange={handleChange('healthUp')} />
           </label>
 
-          <label className='input w-128'>
+          <label className='input w-full'>
             <span className='label'>Gear Bits</span>
             <input id='gear' type='number' className='input' min={0} max={186} step={1} value={game.gear} onChange={handleChange('gear')} />
           </label>
 
-          <label className='input w-128'>
+          <label className='input w-full'>
             <span className='label'>Dash Challenge</span>
             <ValueInput id='ValuedashHS' onChange={handleChange('values')} value={game.values} className='input' type='number' step={1} min={0} max={800} />
           </label>
 
-          <label className='input w-128'>
+          <label className='input w-full'>
             <span className='label'>Position</span>
             X: <input id='checkX' type='number' step={1} value={game.checkX} onChange={handleChange('checkX')} />
             Y: <input id='checkY' type='number' step={1} value={game.checkY} onChange={handleChange('checkY')} />
@@ -184,23 +185,6 @@ export default function Editor() {
               <HomeIcon className='size-6' /> Home
             </button>
           </label>
-
-          {/* <div className='flex gap-2 items-center my-2'>
-            <div className='w-48'>Position</div>
-            <div className='flex flex-col gap-2'></div>
-            <div>
-              X: <input id='checkX' type='number' className='input w-18' step={1} value={game.checkX} onChange={handleChange('checkX')} />
-            </div>
-            <div>
-              Y: <input id='checkY' type='number' className='input w-18' step={1} value={game.checkY} onChange={handleChange('checkY')} />
-            </div>
-            <div>
-              Room: <input id='checkRoom' type='number' className='input w-18' step={1} value={game.checkRoom} onChange={handleChange('checkRoom')} />
-            </div>
-            <button className='btn btn-sm' onClick={handleHome}>
-              <HomeIcon className='size-6'></HomeIcon> Home
-            </button>
-          </div>*/}
 
           <div className='flex gap-8'>
             <div className='flex gap-2 my-2'>
