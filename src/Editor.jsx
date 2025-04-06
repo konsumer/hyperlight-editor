@@ -5,19 +5,19 @@ import { FolderArrowDownIcon, HomeIcon } from '@heroicons/react/24/solid'
 
 import EnumInput from './EnumInput'
 import ValueInput from './ValueInput'
+import ButtonGameJSON from './ButtonGameJSON'
 
 // decode a file buffer (base64 text)
 export function decode(text) {
   const buffer = atob(text)
   const header = buffer.slice(0, 60)
-  const settings = JSON.parse(buffer.slice(60, -1))
-  return { header, settings }
+  const game = JSON.parse(buffer.slice(60, -1))
+  return { id: btoa(header), game }
 }
 
 // encode a file buffer (base64 text)
-export function encode({ header, settings }) {
-  const json = JSON.stringify(settings)
-  return btoa(`${header}${json}\u0000`)
+export function encode({ id, game }) {
+  return btoa(`${atob(id)}${JSON.stringify(game)}\u0000`)
 }
 
 // download a file
@@ -38,7 +38,7 @@ export const enums = {
   cShells: { 11: 'NG+', 0: 'Red', 1: 'Blue', 2: 'Fuscia', 3: 'White', 4: 'Yellow', 5: 'Orange', 6: 'Green', 7: 'Pink', 8: 'Black', 9: 'Ochre', 10: 'Purple', 12: 'Gold' },
   bossGearbits: {
     // TODO: figure out what these are
-    // and also they don't seemm to work as it is, so I might need to tie them to bosses or something
+    // and also they don't seemm to work as it is, so I might need to do soemthing else
     G12110931: 'Gear 1',
     G12110932: 'Gear 2',
     G12110933: 'Gear 3',
@@ -84,10 +84,10 @@ export default function Editor() {
   const [id, idSet] = useState()
 
   const handleFileChange = useCallback(async (e) => {
-    const { header, settings } = decode(await e.target.files[0].text())
+    const r = decode(await e.target.files[0].text())
+    idSet(r.id)
+    gameSet(r.game)
     nameSet(e.target.files[0].name)
-    idSet(btoa(header))
-    gameSet(settings)
   })
 
   // TODO: break these into different callbacks?
@@ -123,7 +123,7 @@ export default function Editor() {
   })
 
   // called when user clicks download button
-  const handleDownload = useCallback((e) => download(name, encode({ header: atob(id), settings: game })))
+  const handleDownload = useCallback((e) => download(name, encode({ id, game })))
 
   // called when user clicks Home button (near position)
   // this will put them in bed.
@@ -135,9 +135,12 @@ export default function Editor() {
       <div className='flex flex-row gap-2 items-center mb-4'>
         <input type='file' className='file-input my-2' onChange={handleFileChange} />
         {!!game && (
-          <button className='btn btn-sm btn-primary' onClick={handleDownload}>
-            <FolderArrowDownIcon className='size-6'></FolderArrowDownIcon> Download
-          </button>
+          <>
+            <ButtonGameJSON value={game} onSubmit={gameSet} />
+            <button className='btn btn-sm btn-primary' onClick={handleDownload}>
+              <FolderArrowDownIcon className='size-6'></FolderArrowDownIcon> Download
+            </button>
+          </>
         )}
       </div>
       {!!game && (
@@ -214,13 +217,6 @@ export default function Editor() {
             <EnumInput id='bossGearbits' value={game.bossGearbits} onChange={handleChange('bossGearbits')} options={enums.bossGearbits}></EnumInput>
           </div>
         </>
-      )}
-
-      {!!game && (
-        <details>
-          <summary>Debug</summary>
-          <textarea value={JSON.stringify(game, null, 2)} className='textarea h-128 w-full' onChange={handleGameChange}></textarea>
-        </details>
       )}
     </div>
   )
